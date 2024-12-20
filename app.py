@@ -3,6 +3,20 @@ import streamlit as st
 import pickle
 import requests
 
+import zipfile
+import io
+
+def getSimilarityfile():
+    zip_file_path = 'similarity.zip'
+
+    with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
+
+        file_name = 'similarity.pkl'  # Replace with the actual file name inside the ZIP
+        with zip_ref.open(file_name) as file:
+
+            file_contents = pickle.load(file)
+    return file_contents
+
 def fetch_poster(movie_id):
     response = requests.get('https://api.themoviedb.org/3/movie/{}?api_key=c44305560298bd92442e71a1d0c241fe'.format(movie_id))
     data = response.json()
@@ -10,7 +24,8 @@ def fetch_poster(movie_id):
 
 movies_list = pickle.load(open('movie_dictk.pkl','rb'))
 movies = pd.DataFrame(movies_list)
-similarity = pickle.load(open('similarity.pkl','rb'))
+
+similarity = getSimilarityfile()
 
 
 def recommend(movie):
